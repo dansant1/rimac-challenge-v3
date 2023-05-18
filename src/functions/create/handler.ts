@@ -8,8 +8,12 @@ import {
   PeopleService,
   PersonAttributes,
   DatabaseConnectionError,
-  CreatePeopleError
+  CreatePeopleError,
+  SWAPIServiceError,
 } from '../../services';
+import {
+  ErrorDictionary,
+} from '../../utils';
 import { db } from '../../config';
 
 export const main: Handler = async () => {
@@ -28,19 +32,17 @@ export const main: Handler = async () => {
     });
   } catch (error) {
     if (error instanceof DatabaseConnectionError) {
-      return formatJSONResponse({
-        message: 'DB connection failed',
-      });
+      return formatJSONResponse(ErrorDictionary['0001']);
     }
     if (error instanceof CreatePeopleError) {
-      return formatJSONResponse({
-        message: 'it can not create the people data',
-      });
+      return formatJSONResponse(ErrorDictionary['0002']);
+    }
+    if (error instanceof SWAPIServiceError) {
+      return formatJSONResponse(ErrorDictionary['0003']);
     }
     return formatJSONResponse({
       message: error.message,
     });
   }
-  
 };
 
